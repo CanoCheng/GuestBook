@@ -1,0 +1,361 @@
+﻿@model IEnumerable<GuestBookProject.Models.ViewModel.GuestBook.GetMessageViewModel>
+
+<style>
+    .leftBorder{
+       border-left-width: 0;
+        margin-left: 30px;
+        position: relative;        
+
+    }
+</style>
+<div>
+    
+        @foreach (var main in Model)
+        {
+            <table width="600" border="1" class="table table-bordered table-condensed">
+                <tr style="background-color:lavender">
+                    <td id="color">
+                        <strong class="col-lg-3">
+                            @main.MemberName
+                        </strong>
+                        <label class="col-lg-9">
+                            @main.CreateTime
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="col-lg-6">@main.Content</span>
+                        <span class="col-lg-6">                            
+                            @if (main.IsOwner == "T")
+                            {
+                                <a class="btn btn-success" id="M_@(main.GuestBook_ID)" name="MainEdit">編輯</a>
+                                <a class="btn btn-danger" id="M_@(main.GuestBook_ID)" name="MainDelete">刪除</a>
+                            }
+                        </span>
+                    </td>                    
+                </tr>
+                <tr>
+                    <td class="col-lg-10">
+                        @*<textarea id="R_AddreplyMessage" multiple="multiple" style="height:30px"></textarea>*@                        
+                        <textarea name="AddReplyMessageContent" cols="40" rows="3" multiple="multiple" id="M_@(main.GuestBook_ID)"></textarea>
+                        <input type="checkbox" name="IsPrivateMessage" value="Private"/><label class="label-warning">悄悄話</label>
+                        <br />
+                        <hr />  
+                        <a class="btn-link" id="M_@(main.GuestBook_ID)" name="DisplayRelayMessage">回覆</a>                        
+                        
+                        @*回覆留言顯示*@
+                        <div name="ReplyMessageList" id="ReplyMessageList" style="display:none">                                                      
+                            @*<p class="leftBorder"><label></label><label class="col-lg-3">留言者</label><label class="col-lg-9">留言時間</label></p>                                
+                            
+                            <p class="leftBorder"><textarea placeholder="留言內容....." cols="40" rows="2" style="min-height:10px;"></textarea><a class="btn-link" style="margin-left:2px" name="Reply_Edit">編輯</a><a class="btn-link" style="margin-left:2px" name="Reply_Delete">刪除</a></p>*@
+
+                            @*<p><div style="min-height:20px;width: 100px;border:solid" contenteditable="true"></div></p>*@                                                                                
+                        </div>                          
+                    </td>
+                </tr>
+            </table>
+        }
+
+            
+</div>
+
+
+<script>
+
+    //# 主留言編輯
+    $('a[name="MainEdit"]').on("click", function () {
+        var mainEdit = $(this);
+        var MainMessageID = $(this).attr("id");
+        var parentSpan1 = $(this).parent('span');
+        var parentPrevious = parentSpan1.prev();
+        var parentPreviousText = parentPrevious.text();
+        //console.log(parentSpan1);
+        //console.log(parentPreviousText);
+        console.log(MainMessageID);
+        parentPrevious.replaceWith('<textarea class="col-lg-6" name="EditMainMessage">' + parentPreviousText + '</textarea>');
+
+        $('textarea[name="EditMainMessage"]').keyup(function (event) {            
+            if (event.keyCode == 13) {
+                var content = this.value;
+                //console.log(content);
+                var editMainTextarea = $(this);                                  
+                
+                UpdateMainMessageAjax(content, MainMessageID, editMainTextarea);
+                
+            }
+        })
+                
+    })
+
+    // # 主留言刪除
+    $('a[name="MainDelete"]').on("click", function () {
+        var mainDelete = $(this);
+        var parentSpan2 = $(this).parent('span');
+        var parentPrevious = parentSpan2.prev();        
+        //console.log(parentSpan2);
+        
+    })
+
+    // # 編輯主留言Ajax
+    function UpdateMainMessageAjax(content, MainMessageID, editMainTextarea) {
+        $.ajax({
+            type: "post",
+            url: "/GuestBook/UpdateMessage",
+            dataType: "text",
+            data: { MainContent: content, MainMessageID: MainMessageID },
+            success: function (data) {
+                editMainTextarea.replaceWith('<span class="col-lg-6">'+data+'</span>');
+            }
+        })
+    }
+
+
+    // #region show ReplyMessage
+    $("a[name='DisplayRelayMessage']").on("click", function () {        
+        //console.log(this);
+        $(this).next('div').attr("style", "display:display");
+        $(this).attr("style", "display:none");
+        //取得此主留言下的所有回覆留言        
+        var getReplyMessage = $(this);
+        var guestBookID = $(this).attr("id");
+        //console.log("getReplyMessage= " + getReplyMessage, "guestBookID= " + guestBookID);
+        GetReplyMessage(getReplyMessage, guestBookID);
+    });
+
+    function GetReplyMessage(getReplyMessage, guestBookID) {        
+        $.ajax({
+            type: "post",
+            url: "/GuestBook/GetReplyMessage",
+            dataType: "json",
+            data: { guestBookID: guestBookID },
+            success: function (data) {
+                getReplyMessage.next('div').empty();
+
+                $.each(data, function (i, item) {
+                    var addReplyMessage =
+                        String.format("<p class='leftBorder'><label class='col-lg-3'>{0}</label><label class='col-lg-9'>{1}</label></p>", item.MemberName, item.CreateTime);
+
+                    var OwnerShow;
+                    if (item.IsOwner == "T") {
+                        OwnerShow = '<a class="btn-link" style="margin-left:2px" name="ReplyEdit">編輯</a><a class="btn-link" style="margin-left:2px" name="ReplyDelete">刪除</a>'
+                    }
+                    else {
+                        OwnerShow = '';
+                    }
+
+                    addReplyMessage = String.format("{0}<p class='leftBorder'><textarea name='ReplyMessage' cols='40' rows='2' style='min-height:10px;' readonly='readonly' id='{2}'>{1}</textarea>{3}</p>", addReplyMessage, item.Content, item.Reply_ID, OwnerShow);
+
+                    getReplyMessage.next('div').append(addReplyMessage);
+                })
+            }
+        });
+    }
+
+    // #endregion show ReplyMessage
+    
+
+    // #region Javascript String.Format (可在Javascript中使用如同C#中的string.format)
+    //使用方式 : var fullName = String.format('Hello. My name is {0} {1}.', 'FirstName', 'LastName');
+    String.format = function () {
+        var s = arguments[0];
+        if (s == null) return "";
+        for (var i = 0; i < s.length -1; i++) {
+            var reg = getStringFormatPlaceHolderRegEx(i);
+            s = s.replace(reg, (arguments[i + 1] == null ? "" : arguments[i + 1]));
+        }
+        return cleanStringFormatResult(s);
+    }
+
+    //讓輸入的字串可以包含{}
+    function getStringFormatPlaceHolderRegEx(placeHolderIndex) {
+        return new RegExp('({)?\\{' + placeHolderIndex + '\\}(?!})', 'gm')
+    }
+
+    //當format格式有多餘的position時，就不會將多餘的position輸出
+    //ex:
+    // var fullName = 'Hello. My name is {0} {1} {2}.'.format('firstName', 'lastName');
+    // 輸出的 fullName 為 'firstName lastName', 而不會是 'firstName lastName {2}'
+    function cleanStringFormatResult(txt) {
+        if (txt == null) return "";
+        return txt.replace(getStringFormatPlaceHolderRegEx("\\d+"), "");
+    }
+
+    // #endregion Javascript String.Format
+
+
+    // #region  keyboard :Shift + Enter & Enter
+    function getCaret(el) {
+        if (el.selectionStart) {
+            return el.selectionStart;
+        } else if (document.selection) {
+            el.focus();
+            var r = document.selection.createRange();
+            if (r == null) {
+                return 0;
+            }
+            var re = el.createTextRange(), rc = re.duplicate();
+            re.moveToBookmark(r.getBookmark());
+            rc.setEndPoint('EndToStart', re);
+            return rc.text.length;
+        }
+        return 0;
+    }
+    // #endregion  keyboard :Shift + Enter &Enter
+
+    //#region 新增回覆留言
+    $('textarea[name="AddReplyMessageContent"]').keyup(function (event) {
+        console.log(event.keyCode);
+        if (event.keyCode == 13) {
+            var content = this.value;
+            var caret = getCaret(this);
+            if (event.shiftKey) {
+                this.value = content.substring(0, caret - 1) + "\n" + content.substring(caret, content.length);
+                event.stopPropagation();
+            } else {
+                this.value = content.substring(0, caret - 1) + content.substring(caret, content.length);
+                //$('form').submit();
+                //console.log(this.value);
+                var content = this.value;
+                var MainMessageID = $(this).attr("id");
+                var Isprivate = $(this).next('input[name="IsPrivateMessage"]').prop('checked') ? "Private" : "NoPrivate";
+                
+                //console.log("Content:"+content," MainMessageID:"+MainMessageID);
+                //debugger;
+                //console.log($(this).parent());
+                //console.log($(this).parent().children('div'));
+
+                //console.log($(this).val());
+                //if ($(this).next('input[name="IsPrivateMessage"]').prop('checked'))
+                //{
+                //    console.log($(this).next('input[name="IsPrivateMessage"]').val());
+                //} else {
+                //    console.log("Nochecked");
+                //}
+
+                var addTextarea = $(this);
+
+                ajaxAddReplyMessage(content, MainMessageID, Isprivate, addTextarea);
+            }
+        }
+    });
+
+    //顯示新增回覆留言Ajax
+    function ajaxAddReplyMessage(content, MainMessageID, Isprivate, addTextarea) {
+        $.ajax({
+            type: "post",
+            url: "/GuestBook/AddReplyMesage",
+            dataType: "json",
+            data: { Content: content, MainMessageID: MainMessageID, Isprivate: Isprivate },
+            success: function (data) {
+                //$(this).parent().children('div').attr("style", "display:none");
+                addTextarea.parent().children('a[name="DisplayRelayMessage"]').attr('style', 'display:none');
+                addTextarea.parent().children('div').attr("style", "display:display");
+                debugger;
+                addTextarea.parent().children('div').empty();
+                $.each(data, function (i, item) {
+                    var addReplyMessage = 
+                        String.format("<p class='leftBorder'><label class='col-lg-3'>{0}</label><label class='col-lg-9'>{1}</label></p>", item.MemberName, item.CreateTime);
+                    var OwnerShow;
+                    if (item.IsOwner == "T") {
+                        OwnerShow = '<a class="btn-link" style="margin-left:2px" name="ReplyEdit">編輯</a><a class="btn-link" style="margin-left:2px" name="ReplyDelete">刪除</a>'
+                    }
+                    else {
+                        OwnerShow = '';
+                    }
+
+                    addReplyMessage = String.format("{0}<p class='leftBorder'><textarea name='ReplyMessage' cols='40' rows='2' style='min-height:10px;' readonly='readonly' id='{2}'>{1}</textarea>{3}</p>", addReplyMessage, item.Content, item.Reply_ID, OwnerShow);                    
+
+                    addTextarea.parent().children('div').append(addReplyMessage);
+                })
+
+            }
+        });
+    }
+    // # endregion 新增回覆留言
+
+    // # 編輯回覆留言
+    $('div[name="ReplyMessageList"]').on("click", "a[name='ReplyEdit']", function () {
+        //console.log($('div textarea[name="ReplyMessage"]'));
+        $('div textarea[name="ReplyMessage"]').prop('readonly', true);
+
+        //console.log ($(this).prev('textarea').attr("readonly"));
+        var UpdateTextarea = $(this).prev('textarea');
+
+        UpdateTextarea.prop('readonly',false);
+        UpdateTextarea.focusin();
+
+        UpdateTextarea.keyup(function (event) {
+            //console.log(event.keyCode);
+            if (event.keyCode == 13) {
+                var content = this.value;
+                var caret = getCaret(this);
+                if (event.shiftKey) {                    
+                    this.value = content.substring(0, caret - 1) + "\n" + content.substring(caret, content.length);
+                    event.stopPropagation();
+                }
+                else {
+                    this.value = content.substring(0, caret - 1) + content.substring(caret, content.length);
+                    
+                    var content = this.value;
+                    var replyID = $(this).prop("id");
+                    //console.log(content, replyID);
+
+                    //更新回覆留言ajax
+                    $.ajax({
+                        type: "post",
+                        url: "/GuestBook/UpdateReplyMessage",
+                        dataType: "text",
+                        data: { ReplyID: replyID, UpdateContent: content },
+                        success: function (data) {
+                            if (data != '') {
+                                UpdateTextarea.text(data);
+                            }                            
+                            UpdateTextarea.prop('readonly', true);
+                        }
+                    })                    
+                }
+            } else if (event.keyCode == 27) {
+                UpdateTextarea.attr('readonly', true);
+            }
+        })
+        //$(this).prev('textarea').focusout($(this).attr('readonly', 'readonly'));
+    });    
+    
+
+    // # 刪除回覆留言
+    $('div[name="ReplyMessageList"]').on("click", "a[name='ReplyDelete']", function () {
+        //console.log($(this).parent("p").attr("class"));
+        var replyID = $(this).parent("p").children('textarea[name="ReplyMessage"]').attr('id');
+        //console.log(replyID);
+
+        var replyMessage = $(this).parent("p");
+        var ReplyMessageAuther = replyMessage.prev();
+
+        //replyMessage.prev().remove();
+        //replyMessage.remove();
+        //console.log(replyMessage.prev());
+
+        //## 刪除留言Ajax
+        $.ajax({
+                type: "POST",
+                url: "/GuestBook/DeleteMessage",
+                dataType: "text",
+                data: { ReplyID: replyID },
+                success: function (data) {
+                    debugger;
+                    if (data == 'success') {
+                        ReplyMessageAuther.remove();
+                        replyMessage.remove();
+                    }
+                }
+            });
+    });
+
+
+    
+</script>
+
+
+
+

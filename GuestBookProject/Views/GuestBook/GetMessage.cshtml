@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewBag.Title = "GetMessage";
+    Html.EnableUnobtrusiveJavaScript(true);
+}
+
+<link href="~/Content/WaitPicture.css" rel="stylesheet" />
+
+<h2>留言板</h2>
+<hr />
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            @*<form class="form">*@
+            @using (Ajax.BeginForm("CreateMessage", "GuestBook", null
+                                    , new AjaxOptions() { UpdateTargetId = "displayguestbook", HttpMethod = "POST"
+                                    , LoadingElementDuration = 300,LoadingElementId = "waitpicture",OnSuccess = "CreateSuccess"}
+                                    , new { @class = "form", id = "CreateMessage" }))
+            {
+                <div class="form-group">
+                    <label class="col-lg-1 control-label">留言</label>
+                    <div class="col-lg-11">
+                        <textarea id="AddMessage" name="AddMessage" style="margin: 0px; width: 343px; height: 148px;"></textarea>
+                    </div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <div class="col-md-offset-4 col-md-2">
+                        <button id="AddMainMessage" class="btn btn-primary">送出</button>
+                    </div>
+                </div>
+            }
+            @*</form>*@
+        </div>
+    </div>
+    <hr/>
+    <div id="waitpicture" style="display:none">
+        <div class="loading"></div>
+    </div>
+    
+    <div class="row">
+        <div class="col-xs-8 col-xs-offset-2">
+            <h3>留言內容</h3>
+            <br />
+            <div id="displayguestbook">
+                @*@Html.Action("GetMessageListPartial","GuestBook")*@
+                @Html.Partial("_GetMainMessagePartialView")                
+            </div>
+        </div>
+    </div>
+</div>
+
+@section GetMessage{
+    <script>
+        //驗證新增留言是否為空值
+        $("#CreateMessage").submit(function () {
+            var addmessage = $("#AddMessage").val().trim();
+            if (addmessage.length == 0 || addmessage == ' ') {
+                return false;
+            }
+            return true;
+        })
+        
+        function CreateSuccess(data) {
+            if (data != null) {
+                $("#AddMessage").val('');
+            }
+        }
+        
+    </script>
+}

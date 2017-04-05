@@ -1,0 +1,47 @@
+﻿@*@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)*@
+@{
+    string logindata = string.Empty;
+    string nickName = string.Empty;
+    if (Session["Login"] != null)
+    {
+        logindata = Session["Login"].ToString();
+        string[] login = logindata.Split('_');
+        nickName = login[1];
+    }
+
+}
+@*@(Session["Login"])*@
+
+@if (!string.IsNullOrWhiteSpace(logindata))
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            @if (!string.IsNullOrWhiteSpace(nickName))
+                {
+                    <a href="@Url.Action("ChangePassword","Members")">修改密碼</a>
+                }
+        </li>
+    </ul>
+    using (Html.BeginForm("LogOff", "Members", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            @*@Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })*@
+            @if (!string.IsNullOrWhiteSpace(nickName))
+            {
+               @*@Html.ActionLink("Hello " + nickName + "!", "#", "#", routeValues: null, htmlAttributes: new { title = "Manage" })*@
+                <a title="Manage">Hello  @(nickName) !</a>
+            }
+        </li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">登出</a></li>
+    </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("註冊", "Register", "Members", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("登入", "Login", "Members", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}
