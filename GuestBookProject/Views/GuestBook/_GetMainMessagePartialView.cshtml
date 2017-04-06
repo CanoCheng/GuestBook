@@ -1,4 +1,7 @@
-﻿@model IEnumerable<GuestBookProject.Models.ViewModel.GuestBook.GetMessageViewModel>
+﻿@*@model IEnumerable<GuestBookProject.Models.ViewModel.GuestBook.GetMessageViewModel>*@
+@model IPagedList<GuestBookProject.Models.ViewModel.GuestBook.GetMessageViewModel>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" />
 
 <style>
     .leftBorder{
@@ -8,6 +11,9 @@
 
     }
 </style>
+
+@Html.PagedListPager(Model, page => Url.Action("GetMessage", "GuestBook", new { page }))
+
 <div>
     
         @foreach (var main in Model)

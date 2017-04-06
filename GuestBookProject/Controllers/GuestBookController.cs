@@ -7,6 +7,7 @@ using GuestBookProject.Models.ViewModel;
 using GuestBookProject.Service.GuestBookService;
 using GuestBookProject.Models;
 using GuestBookProject.Models.ViewModel.GuestBook;
+using PagedList;
 
 namespace GuestBookProject.Controllers
 {
@@ -138,11 +139,14 @@ namespace GuestBookProject.Controllers
             return Content(DeletedMessage);
         }
 
+        //分頁一頁有幾筆資料
+        private int pageSize = 5;
+
         /// <summary>
         /// 顯示留言板頁面
         /// </summary>
         /// <returns></returns>
-        public ActionResult GetMessage()
+        public ActionResult GetMessage(int page = 1)
         {
             //ETMall.Common.DataAccess.MSSQL.SqlHelper.ExecuteNonQuery()
             //Connection.Query
@@ -155,11 +159,17 @@ namespace GuestBookProject.Controllers
             {
                 loginData = _guestbookService.GetMember(login);
             }
-           
+            
+            //判斷現在第幾頁
+            int currentPage = page < 1 ? 1 : page;
 
             var mainMessage = _guestbookService.GetMainMessage(loginData.Role,loginData.Member_ID);
-           
-            return View(mainMessage);
+
+            //return View(mainMessage);
+
+            var result = mainMessage.ToPagedList(currentPage,pageSize);
+
+            return View(result);
         }
 
 
@@ -276,7 +286,12 @@ namespace GuestBookProject.Controllers
             
             return Content(newReplyMessage);
         }
-        
+
+        /// <summary>
+        /// 刪除回覆留言
+        /// </summary>
+        /// <param name="ReplyID">回覆留言編號</param>
+        /// <returns>是否刪除成功字串 Y</returns>
         [HttpPost]
         public ActionResult DeleteReplyMessage(string ReplyID)
         {

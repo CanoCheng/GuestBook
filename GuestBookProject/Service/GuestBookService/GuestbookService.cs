@@ -74,7 +74,7 @@ namespace GuestBookProject.Service.GuestBookService
                     }
 
                     //轉型會員角色
-                    member.Role = loginArray[2].Equals("true") ? true : false;
+                    member.Role = loginArray[2].Equals("True") ? true : false;
                 }
             }                        
             return member;
@@ -100,11 +100,12 @@ namespace GuestBookProject.Service.GuestBookService
             return IsAddSuccess; 
         }
 
-        /// <summary>
-        /// 取得主留言資料
-        /// </summary>
-        /// <param name="Role"></param>
-        /// <returns></returns>
+       /// <summary>
+       /// 取得主留言資料
+       /// </summary>
+       /// <param name="Role">登入會員角色</param>
+       /// <param name="MemberID">登入會員編號</param>
+       /// <returns>所有主留言資料</returns>
         public IEnumerable<GetMessageViewModel> GetMainMessage (bool Role,int MemberID)
         {
             IEnumerable<GetMessageViewModel> mainMessageListData = null;

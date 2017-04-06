@@ -2,64 +2,31 @@
 <ArrayOfArrayOfArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <ArrayOfArrayOfString>
     <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\models\commontspname.cs</string>
+      <string>d:\github\guestbook\guestbook\guestbookproject\models\commontspname.cs</string>
     </ArrayOfString>
     <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\controllers\guestbookcontroller.cs</string>
+      <string>d:\github\guestbook\guestbook\guestbookproject\controllers\guestbookcontroller.cs</string>
     </ArrayOfString>
     <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\service\guestbookservice\guestbookservice.cs</string>
+      <string>D:\GitHub\GuestBook\GuestBook\GuestBookProject\Service\GuestBookService\GuestbookService.cs</string>
     </ArrayOfString>
     <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\repositery\guestbookrepository.cs</string>
+      <string>d:\github\guestbook\guestbook\guestbookproject\repositery\guestbookrepository.cs</string>
     </ArrayOfString>
     <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\views\guestbook\getmessage.cshtml</string>
+      <string>d:\github\guestbook\guestbook\guestbookproject\views\guestbook\_getmainmessagepartialview.cshtml</string>
     </ArrayOfString>
     <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\repositery\memberrepositery.cs</string>
+      <string>d:\github\guestbook\guestbook\guestbookproject\repositery\memberrepositery.cs</string>
     </ArrayOfString>
     <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\models\viewmodel\guestbook\getmessageviewmodel.cs</string>
+      <string>d:\github\guestbook\guestbook\guestbookproject\service\memberservice\membersservice.cs</string>
     </ArrayOfString>
     <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\controllers\memberscontroller.cs</string>
+      <string>d:\github\guestbook\guestbook\guestbookproject\controllers\memberscontroller.cs</string>
     </ArrayOfString>
     <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\views\shared\_layout.cshtml</string>
-    </ArrayOfString>
-    <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\views\account\_externalloginslistpartial.cshtml</string>
-    </ArrayOfString>
-    <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\models\viewmodel\memberloginmodel.cs</string>
-    </ArrayOfString>
-    <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\controllers\managecontroller.cs</string>
-    </ArrayOfString>
-    <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\models\accountviewmodels.cs</string>
-    </ArrayOfString>
-    <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\controllers\accountcontroller.cs</string>
-    </ArrayOfString>
-    <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\views\shared\_loginpartial.cshtml</string>
-    </ArrayOfString>
-    <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\models\viewmodel\member\registerviewmodel.cs</string>
-    </ArrayOfString>
-    <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\views\members\register.cshtml</string>
-    </ArrayOfString>
-    <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\service\memberservice\membersservice.cs</string>
-    </ArrayOfString>
-    <ArrayOfString>
-      <string>D:\東森信息\留言板程式\GuestBookProject\Views\GuestBook\_GetMainMessagePartialView.cshtml</string>
-    </ArrayOfString>
-    <ArrayOfString>
-      <string>d:\東森信息\留言板程式\guestbookproject\models\replyguestbooksmodel.cs</string>
+      <string>D:\GitHub\GuestBook\GuestBook\GuestBookProject\Views\Web.config</string>
     </ArrayOfString>
   </ArrayOfArrayOfString>
 </ArrayOfArrayOfArrayOfString>
