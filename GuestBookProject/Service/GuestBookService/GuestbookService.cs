@@ -74,17 +74,7 @@ namespace GuestBookProject.Service.GuestBookService
                     }
 
                     //轉型會員角色
-                    //int role = 10;
-                    //bool b_role = false;
-                    //if (!string.IsNullOrWhiteSpace(loginArray[2]))
-                    //{
-                    //    b_role = int.TryParse(loginArray[2], out role);
-                    //}
-                    ////取得會員角色
-                    //if (b_role && role!=10)
-                    //{
-                    //    member.Role = role;
-                    //}
+                    member.Role = loginArray[2].Equals("true") ? true : false;
                 }
             }                        
             return member;
@@ -213,7 +203,7 @@ namespace GuestBookProject.Service.GuestBookService
         /// <param name="loginData">登入會員資料</param>
         /// <param name="UpdateContent">修改回覆留言內容</param>
         /// <returns>修改完成回覆留言的內容</returns>
-        public string UpdateReplyMessage(MemberLoginModel loginData,string UpdateContent,string replyID)
+        public string UpdateReplyMessage(MemberLoginModel loginData,string UpdateContent,string replyID,bool deleteFlag)
         {
             string UpdatedContent = string.Empty;
 
@@ -222,7 +212,7 @@ namespace GuestBookProject.Service.GuestBookService
 
             if (transReplyID && replyGuestbookID != 0)
             {
-                UpdatedContent = guestbookRepository.UpdateReplyMessageContent(loginData.Member_ID, loginData.Role, UpdateContent, replyGuestbookID);
+                UpdatedContent = guestbookRepository.UpdateReplyMessageContent(loginData.Member_ID, loginData.Role, UpdateContent, replyGuestbookID, deleteFlag);
             }
             
             if (!string.IsNullOrWhiteSpace(UpdatedContent))
@@ -235,6 +225,13 @@ namespace GuestBookProject.Service.GuestBookService
             return UpdatedContent;
         }
 
+        /// <summary>
+        /// 更新主留言內容
+        /// </summary>
+        /// <param name="loginData">會員登入資料</param>
+        /// <param name="Content">編輯內容</param>
+        /// <param name="MainMessageID">主留言編號</param>
+        /// <returns>新留言內容</returns>
         public string UpdateMainMessage(MemberLoginModel loginData, string Content, string MainMessageID)
         {
             //資料庫編輯過後的留言
@@ -259,6 +256,37 @@ namespace GuestBookProject.Service.GuestBookService
             }
 
             return UpdatedMessage;
+        }
+
+        /// <summary>
+        /// 刪除主留言
+        /// </summary>
+        /// <param name="loginData">會員登入資料</param>
+        /// <param name="mainID">主留言ID</param>
+        /// <returns>傳回是否刪除成功字樣</returns>
+        public string DeleteMessage(MemberLoginModel loginData, string mainID)
+        {
+            //回傳給前端是否動態刪除主留言
+            string IsSuccessed = string.Empty;
+            
+            //取得主留言ID，傳進來參數 EX:M_32
+            string[] mainArrary = mainID.Split('_');
+
+            //轉換主留言ID 為 int 型態
+            int guestbookID = 0;
+            bool getguestbookID = int.TryParse(mainArrary[1], out guestbookID);
+
+            //存放更新資料庫 影響筆數
+            int effectCount = 0;
+            if (getguestbookID && guestbookID != 0)
+            {
+                effectCount = guestbookRepository.DeleteMainMessage(loginData.Member_ID, loginData.Role, guestbookID);
+            }
+
+            //是否影響資料庫資料是否大於1筆，代表更新成功，就回傳字串 Y 
+            IsSuccessed = effectCount > 0 ? "Y" : string.Empty;
+
+            return IsSuccessed;
         }
     }
 }

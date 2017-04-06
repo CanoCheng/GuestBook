@@ -140,10 +140,10 @@ namespace GuestBookProject.Repositery
         /// <param name="role">會員角色</param>
         /// <param name="content">修改回覆留言內容</param>
         /// <returns>修改完成回覆留言的內容</returns>
-        public string UpdateReplyMessageContent(int memberID,bool role,string content,int replyID)
+        public string UpdateReplyMessageContent(int memberID,bool role,string content,int replyID,bool deleteFlag)
         {
             string newReplyMessage = string.Empty;
-            if (!string.IsNullOrWhiteSpace(content))
+            if (!string.IsNullOrWhiteSpace(content) && !deleteFlag)
             {
                 using (var conn = new SqlConnection(connection))
                 {
@@ -170,6 +170,11 @@ namespace GuestBookProject.Repositery
             return newReplyMessage;
         }
 
+        /// <summary>
+        /// 更新主留言
+        /// </summary>
+        /// <param name="updateModel">更新主留言資料</param>
+        /// <returns>新的主留言內容</returns>
         public string UpdateMainMessageContent(UpdateMainMessageModel updateModel)
         {
             string newMainMessage = string.Empty;
@@ -184,6 +189,26 @@ namespace GuestBookProject.Repositery
             }
 
             return newMainMessage;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="memberID">登入會員編號</param>
+        /// <param name="role">會員角色</param>
+        /// <param name="mainID">主留言編號</param>
+        /// <returns>更新資料庫影響筆數</returns>
+        public int DeleteMainMessage(int memberID,bool role,int mainID)
+        {
+            int effectDataCount = 0;
+            using (var conn = new SqlConnection(connection))
+            {
+                var count = conn.Execute(CommontSPName.DeleteMainMessage,
+                                        new { MemberID = memberID, Role = role, MainID = mainID },
+                                        commandType: System.Data.CommandType.StoredProcedure);
+                effectDataCount = count;
+            }
+            return effectDataCount;
         }
     }
 }

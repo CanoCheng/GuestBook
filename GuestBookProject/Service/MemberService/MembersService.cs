@@ -106,7 +106,7 @@ namespace GuestBookProject.Service.MemberService
         /// <param name="password">登入密碼</param>
         /// <returns>會員編號、會員暱稱、會員角色</returns>
         public MemberLoginModel GetMemberLoginData(string account, string password)
-        {
+        {            
             var logindata = repositery.GetMemberLoginData(account, password);
 
             return logindata;

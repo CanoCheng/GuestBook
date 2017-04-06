@@ -27,9 +27,13 @@
                     <td>
                         <span class="col-lg-6">@main.Content</span>
                         <span class="col-lg-6">                            
-                            @if (main.IsOwner == "T")
+                            @if (main.IsOwner == "T" && main.IsAdmin == "F")
                             {
                                 <a class="btn btn-success" id="M_@(main.GuestBook_ID)" name="MainEdit">編輯</a>
+                                <a class="btn btn-danger" id="M_@(main.GuestBook_ID)" name="MainDelete">刪除</a>
+                            }
+                            else if (main.IsOwner == "T" && main.IsAdmin == "T")
+                            {
                                 <a class="btn btn-danger" id="M_@(main.GuestBook_ID)" name="MainDelete">刪除</a>
                             }
                         </span>
@@ -91,9 +95,28 @@
     // # 主留言刪除
     $('a[name="MainDelete"]').on("click", function () {
         var mainDelete = $(this);
-        var parentSpan2 = $(this).parent('span');
-        var parentPrevious = parentSpan2.prev();        
+        var MainMessageID = $(this).attr("id");
+        var parentLevel1 = $(this).parent('span');
+        var parentLevel2 = parentLevel1.parent('td');
+        var parentLevel3 = parentLevel2.parent('tr');
+        var parentLevel4 = parentLevel3.parent('tbody');
+        var TopMessageParent = parentLevel4.parent('table');
+        console.log(MainMessageID);
         //console.log(parentSpan2);
+        //console.log(TopMessageParent);
+
+        $.ajax({
+            type: "post",
+            url: "/GuestBook/DeleteMessage",
+            dataType: "text",
+            data: { MainMessageID: MainMessageID },
+            success: function (data) {
+                if (data == 'Y') {
+                    TopMessageParent.remove();
+                }
+
+            }
+        });
         
     })
 
@@ -137,13 +160,16 @@
                         String.format("<p class='leftBorder'><label class='col-lg-3'>{0}</label><label class='col-lg-9'>{1}</label></p>", item.MemberName, item.CreateTime);
 
                     var OwnerShow;
-                    if (item.IsOwner == "T") {
-                        OwnerShow = '<a class="btn-link" style="margin-left:2px" name="ReplyEdit">編輯</a><a class="btn-link" style="margin-left:2px" name="ReplyDelete">刪除</a>'
+                    if (item.IsOwner == "T" && item.IsAdmin =='F') {
+                        OwnerShow = '<a class="btn-link" style="margin-left:2px" name="ReplyEdit">編輯</a><a class="btn-link" style="margin-left:2px" name="ReplyDelete">刪除</a>';
+                    }
+                    else if (item.IsOwner == "T" && item.IsAdmin == 'T') {
+                        OwnerShow = '<a class="btn-link" style="margin-left:2px" name="ReplyDelete">刪除</a>';
                     }
                     else {
                         OwnerShow = '';
                     }
-
+                    
                     addReplyMessage = String.format("{0}<p class='leftBorder'><textarea name='ReplyMessage' cols='40' rows='2' style='min-height:10px;' readonly='readonly' id='{2}'>{1}</textarea>{3}</p>", addReplyMessage, item.Content, item.Reply_ID, OwnerShow);
 
                     getReplyMessage.next('div').append(addReplyMessage);
@@ -327,7 +353,7 @@
     $('div[name="ReplyMessageList"]').on("click", "a[name='ReplyDelete']", function () {
         //console.log($(this).parent("p").attr("class"));
         var replyID = $(this).parent("p").children('textarea[name="ReplyMessage"]').attr('id');
-        //console.log(replyID);
+        console.log(replyID);
 
         var replyMessage = $(this).parent("p");
         var ReplyMessageAuther = replyMessage.prev();
@@ -336,10 +362,10 @@
         //replyMessage.remove();
         //console.log(replyMessage.prev());
 
-        //## 刪除留言Ajax
+        //## 刪除回覆留言Ajax
         $.ajax({
                 type: "POST",
-                url: "/GuestBook/DeleteMessage",
+                url: "/GuestBook/DeleteReplyMessage",
                 dataType: "text",
                 data: { ReplyID: replyID },
                 success: function (data) {

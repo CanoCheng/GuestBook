@@ -75,6 +75,12 @@ namespace GuestBookProject.Controllers
             
         }
 
+        /// <summary>
+        /// 編輯主留言
+        /// </summary>
+        /// <param name="MainContent">編輯內容</param>
+        /// <param name="MainMessageID">主留言ID</param>
+        /// <returns>編輯後新主留言</returns>
         [HttpPost]
         public ActionResult UpdateMessage(string MainContent, string MainMessageID)
         {
@@ -101,6 +107,36 @@ namespace GuestBookProject.Controllers
             return Content(UpdatedMessage);
         }
 
+        /// <summary>
+        /// 刪除主留言
+        /// </summary>
+        /// <returns>回傳是否刪除成功</returns>
+        [HttpPost]
+        public ActionResult DeleteMessage(string MainMessageID)
+        {
+            //資料庫編輯過後的留言
+            string DeletedMessage = string.Empty;
+
+            //使用者登入資料
+            string login = SessionLogin();
+
+            //存放使用者登入資料物件
+            MemberLoginModel loginData = new MemberLoginModel();
+
+            //取得會員登入資料
+            if (!string.IsNullOrWhiteSpace(login))
+            {
+                loginData = _guestbookService.GetMember(login);
+            }
+
+            if (loginData!=null & !string.IsNullOrWhiteSpace(MainMessageID))
+            {
+                DeletedMessage = _guestbookService.DeleteMessage(loginData, MainMessageID);
+            }
+
+
+            return Content(DeletedMessage);
+        }
 
         /// <summary>
         /// 顯示留言板頁面
@@ -233,41 +269,35 @@ namespace GuestBookProject.Controllers
             }
 
             string newReplyMessage = string.Empty;
-            if (!string.IsNullOrWhiteSpace(UpdateContent) &&　!string.IsNullOrWhiteSpace(ReplyID) && loginData.Member_ID !=0)
+            if (loginData!=null & !string.IsNullOrWhiteSpace(UpdateContent) &&　!string.IsNullOrWhiteSpace(ReplyID) && loginData.Member_ID !=0)
             {
-                newReplyMessage = _guestbookService.UpdateReplyMessage(loginData, UpdateContent, ReplyID);
+                newReplyMessage = _guestbookService.UpdateReplyMessage(loginData, UpdateContent, ReplyID,false);
             }
             
             return Content(newReplyMessage);
         }
-
-        /// <summary>
-        /// 刪除回覆留言
-        /// </summary>
-        /// <param name="ReplyID">回覆留言ID</param>
-        /// <returns>是否刪除成功字串</returns>
-        public ActionResult DeleteMessage(string ReplyID)
+        
+        [HttpPost]
+        public ActionResult DeleteReplyMessage(string ReplyID)
         {
-            string whetherSuccessed = string.Empty; 
+            //使用者登入資料
+            string login = SessionLogin();
 
-            if (!string.IsNullOrWhiteSpace(ReplyID))
-            {               
-                //使用者登入資料
-                string login = SessionLogin();
+            //存放使用者登入資料物件
+            MemberLoginModel loginData = new MemberLoginModel();
 
-                //存放使用者登入資料物件
-                MemberLoginModel loginData = new MemberLoginModel();
-
-                //取得會員登入資料
-                if (!string.IsNullOrWhiteSpace(login))
-                {
-                    loginData = _guestbookService.GetMember(login);
-                }
-
-                whetherSuccessed = _guestbookService.UpdateReplyMessage(loginData, string.Empty, ReplyID);
+            //取得會員登入資料
+            if (!string.IsNullOrWhiteSpace(login))
+            {
+                loginData = _guestbookService.GetMember(login);
             }
             
-            return Content(whetherSuccessed);
+            string IsSuccess = string.Empty;
+            if(loginData!=null && !string.IsNullOrWhiteSpace(ReplyID))
+            {
+                IsSuccess = _guestbookService.UpdateReplyMessage(loginData, null, ReplyID,true);
+            }
+            return Content(IsSuccess);
         }
     }
 }

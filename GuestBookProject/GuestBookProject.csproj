@@ -216,10 +216,10 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CommontSPName.cs" />
     <Compile Include="Models\AddMainGuestbook.cs" />
-    <Compile Include="Models\GuestbooksModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\ReplyGuestbooksModel.cs" />
+    <Compile Include="Models\UpdateMainMessageModel.cs" />
     <Compile Include="Models\ViewModel\GuestBook\GetMessageViewModel.cs" />
     <Compile Include="Models\ViewModel\MemberLoginModel.cs" />
     <Compile Include="Models\ViewModel\Member\ChangePasswordViewModel.cs" />

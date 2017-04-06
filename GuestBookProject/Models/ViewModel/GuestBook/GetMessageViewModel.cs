@@ -51,6 +51,11 @@ namespace GuestBookProject.Models.ViewModel.GuestBook
         public string IsOwner { get; set; } //顯示編輯 & 刪除按鍵
 
         /// <summary>
+        /// 是否為管理員 T:是、F:不是
+        /// </summary>
+        public string IsAdmin { get; set; }
+
+        /// <summary>
         /// 是否有權限觀看  T:可顯示、F:不可顯示
         /// </summary>
         public string IsPrivateMessage { get; set; } //顯示悄悄話
@@ -87,10 +92,15 @@ namespace GuestBookProject.Models.ViewModel.GuestBook
         public string IsOwner { get; set; }  //顯示編輯 & 刪除按鍵
 
         /// <summary>
+        /// 是否為管理者  刪除 Button T:管理者 、F:非管理者
+        /// </summary>
+        public string IsAdmin { get; set; }
+
+        /// <summary>
         /// 是否有權限顯示悄悄話，T:可顯示 、F:不可顯示
         /// </summary>
         public string IsPrivateMessage { get; set; } //顯示悄悄話
-
+            
         /// <summary>
         /// 回覆留言集合
         /// </summary>

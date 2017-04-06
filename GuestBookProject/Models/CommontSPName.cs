@@ -28,5 +28,7 @@ namespace GuestBookProject.Models
         public const string DeleteReplyMessage = "dbo.SP_DeleteReplyMessage";
 
         public const string UpdateMainMessage = "dbo.SP_UpdateMainMessage";
+
+        public const string DeleteMainMessage = "dbo.SP_DeleteMainMessage";
     }
 }
