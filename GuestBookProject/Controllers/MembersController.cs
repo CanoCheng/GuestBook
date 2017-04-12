@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using GuestBookProject.Models.ViewModel.Member;
 using GuestBookProject.Service.MemberService;
 using GuestBookProject.Models.ViewModel;
+using Newtonsoft.Json;
+using GuestBookProject.SessionManager;
 
 namespace GuestBookProject.Controllers
 {
@@ -57,10 +59,15 @@ namespace GuestBookProject.Controllers
                     //會員資料寫入Session
                     if (logindata != null)
                     {
-                        Session["Login"] = string.Format("{0}_{1}_{2}", logindata.Member_ID, logindata.NickName, logindata.Role);                                                
+                        //Session["Login"] = string.Format("{0}_{1}_{2}", logindata.Member_ID, logindata.NickName, logindata.Role);
+                        //物件序列化成JSON
+                        //Session[SessionManager.SessionKey.SessionKeyName.MemberLogin] = JsonConvert.SerializeObject(logindata);
+                        //呼叫方法寫入Session
+                        LoginSession relatedSession = new LoginSession();
+                        relatedSession.WriteLoginSession(logindata);
                     }
 
-                    if (Session["Login"] !=null && !string.IsNullOrWhiteSpace(Session["Login"].ToString()))
+                    if (Session[SessionManager.SessionKey.SessionKeyName.MemberLogin] !=null)
                     {
                         //轉導頁面到留言板
                         return RedirectToAction("GetMessage", "GuestBook");
@@ -95,14 +102,16 @@ namespace GuestBookProject.Controllers
                 //會員資料寫入Session
                 if (logindata != null)
                 {
-                    Session["Login"] = string.Format("{0}_{1}_{2}", logindata.Member_ID, logindata.NickName, logindata.Role);
+                    //Session["Login"] = string.Format("{0}_{1}_{2}", logindata.Member_ID, logindata.NickName, logindata.Role);
+                    //物件序列化成JSON
+                    Session[SessionManager.SessionKey.SessionKeyName.MemberLogin] = JsonConvert.SerializeObject(logindata);
                 }
 
-                if (Session["Login"] != null && !string.IsNullOrWhiteSpace(Session["Login"].ToString()))
+                if (Session[SessionManager.SessionKey.SessionKeyName.MemberLogin] != null)
                 {
                     //轉導頁面到留言板
                     return RedirectToAction("GetMessage", "GuestBook");
-                }                
+                }
             }
 
             ViewBag.Error = "密碼輸入錯誤，請重新輸入密碼。";

@@ -5,7 +5,7 @@ using System.Web;
 
 namespace GuestBookProject.Models
 {
-    public class CommontSPName
+    public struct CommontSPName
     {
         public const string QueryAccountExisted = "dbo.SP_CheckMemberExisted";
 

@@ -239,6 +239,8 @@
     <Compile Include="Service\GuestBookService\GuestbookService.cs" />
     <Compile Include="Service\MemberService\MembersService.cs" />
     <Compile Include="Service\TestConnectionData.cs" />
+    <Compile Include="SessionManager\LoginSession.cs" />
+    <Compile Include="SessionManager\SessionKey.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

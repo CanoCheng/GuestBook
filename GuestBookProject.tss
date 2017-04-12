@@ -26,7 +26,10 @@
       <string>d:\github\guestbook\guestbook\guestbookproject\controllers\memberscontroller.cs</string>
     </ArrayOfString>
     <ArrayOfString>
-      <string>D:\GitHub\GuestBook\GuestBook\GuestBookProject\Views\Web.config</string>
+      <string>d:\github\guestbook\guestbook\guestbookproject\views\web.config</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>d:\github\guestbook\guestbook\guestbookproject\views\guestbook\getmessage.cshtml</string>
     </ArrayOfString>
   </ArrayOfArrayOfString>
 </ArrayOfArrayOfArrayOfString>

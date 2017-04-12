@@ -13,24 +13,39 @@ namespace GuestBookProject.Controllers
 {
     public class GuestBookController : Controller
     {
-        GuestbookService _guestbookService = new GuestbookService();
+        private GuestbookService _guestbookService = new GuestbookService();
         /// <summary>
         /// 取得會員登入相關資料
         /// </summary>
         /// <returns></returns>
         public string SessionLogin()
         {
-            //取得會員登入相關資料
-            string login = string.Empty;
+            #region 原始寫法
+            ////取得會員登入相關資料
+            //string login = string.Empty;
 
-            if (Session["Login"] != null)
+            //if (Session["Login"] != null)
+            //{
+            //    login = Session["Login"].ToString();
+            //}
+
+            //return login;
+            #endregion
+
+            #region Ken建議寫法
+            //(1)取得會員登入相關資料
+            //return Session["Login"] != null ? Session["Login"].ToString() : string.Empty;
+
+
+            //(2)取得會員登入相關資料
+            if (Session[SessionManager.SessionKey.SessionKeyName.MemberLogin] != null)
             {
-                login = Session["Login"].ToString();
+                return Session[SessionManager.SessionKey.SessionKeyName.MemberLogin].ToString();
             }
-
-            return login;
+            return string.Empty;
+            #endregion
         }
-        
+
         /// <summary>
         /// 新增留言
         /// </summary>
@@ -69,7 +84,9 @@ namespace GuestBookProject.Controllers
                 //主留言資料
                 var mainMessage = _guestbookService.GetMainMessage(loginData.Role, loginData.Member_ID);
 
-                return PartialView("_GetMainMessagePartialView",mainMessage);
+                var displayMessage = mainMessage.ToPagedList(1,5);
+
+                return PartialView("_GetMainMessagePartialView", displayMessage);
             }
             
             return RedirectToAction("GetMessage","GuestBook");
